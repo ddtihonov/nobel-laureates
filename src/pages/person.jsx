@@ -9,6 +9,7 @@ import { loadLaureates } from '../services/api';
 export const PersonPage = () => {
   const [person, setPerson] = useState(null);
   const { personId } = useParams();
+ /* Например, когда мы находимся по адресу /list/777, вызов useParams вернёт такой объект*/
 
   const loadLaureateInfo = useCallback(
     () => {

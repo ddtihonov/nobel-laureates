@@ -9,6 +9,7 @@ const CountryPage = () => {
   const [countryTitle, setCountryTitle] = useState('');
 
   const { country } = useParams();
+  /*Например, когда мы находимся по адресу /list/777, вызов useParams вернёт такой объект*/ 
 
   const loadCountryInfo = useCallback(
     () => {

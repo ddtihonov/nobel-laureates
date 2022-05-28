@@ -4,12 +4,16 @@ import styles from './country.module.css';
 import arrow from '../../images/arrow.svg';
 
 export const CountryList = ({ countries }) => {
+
+  console.log(countries)
+  /* 135 обьектов вида {name: 'Chile', code: 'CL'}*/
+
   return (
     <ul>
       {countries.map(({ name, code, count }, index) => (
         <li key={index}>
           <Link
-            to={{ pathname: `/list/${code}` }}
+            to={{ pathname: `/list/${code}` }} /* 135 обьектов вида {name: 'Chile', code: 'CL'}*/
             className={styles.link}
           >
             <div className={styles.country}>
