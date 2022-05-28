@@ -5,8 +5,7 @@ import arrow from '../../images/arrow.svg';
 
 export const CountryList = ({ countries }) => {
 
-  console.log(countries)
-  /* 135 обьектов вида {name: 'Chile', code: 'CL'}*/
+  /*countries - 135 обьектов вида {name: 'Chile', code: 'CL'}*/
 
   return (
     <ul>
