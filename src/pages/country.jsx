@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useLocation, useHistory } from 'react-router-dom';
+import { useParams, useRouteMatch, useLocation, useHistory } from 'react-router-dom';
 import styles from './page.module.css';
 import LaureateList from '../components/laureate-list';
-import Dropdown from '../components/dropdown/dropdown';
+import Dropdown from '../components/dropdown';
+import { Breadcrumbs } from '../components/breadcrumbs';
 import { loadLaureates, loadCountries, deserializeQuery, serializeQuery } from '../services/api';
+import { isContainRoute } from '../services/breadcrumbs';
 
 const ALL = 'all';
 
@@ -16,8 +18,18 @@ export const CountryPage = () => {
   const [countryTitle, setCountryTitle] = useState('');
 
   const { country } = useParams();
-  const { pathname, search } = useLocation();
+  const { pathname, search, state } = useLocation();
   const history = useHistory();
+  const { path, url } = useRouteMatch();
+
+  useEffect(
+    () => {
+      if (countryTitle && state && !isContainRoute(state, url)) {
+        history.replace({ state: [...state, { path, url, title: countryTitle }] });
+      }
+    },
+    [countryTitle, path, url, state, history]
+  );
 
   const loadFilters = filteredLaureates => {
     const years = new Set();
@@ -59,7 +71,6 @@ export const CountryPage = () => {
     () => {
       loadCountryInfo();
       loadAllCountryLaureates();
-      //deserializeQuery();
     },
     [country, loadCountryInfo, loadAllCountryLaureates]
   );
@@ -74,7 +85,7 @@ export const CountryPage = () => {
           const isYearFits = year => (selectedYear ? year === selectedYear : true);
           const isCategoryFits = category =>
             selectedCategory ? category === selectedCategory : true;
-            return prizes.some(prize => isCategoryFits(prize.category) && isYearFits(prize.year)) ;
+          return prizes.some(({ year, category }) => isYearFits(year) && isCategoryFits(category));
         };
 
         const filteredLaureates = [];
@@ -92,7 +103,7 @@ export const CountryPage = () => {
 
   useEffect(
     () => {
-      const params = {};
+      const params = deserializeQuery(search);
 
       setSelectedYear(`${params.year || ALL}`); // to string
       setSelectedCategory(params.category || ALL);
@@ -119,7 +130,9 @@ export const CountryPage = () => {
         }
         query = serializeQuery(params);
       }
+      const { state } = history.location;
       history.replace({
+        state,
         pathname,
         search: query
       });
@@ -130,6 +143,7 @@ export const CountryPage = () => {
   return (
     <div className={styles.vertical_padding}>
       <header className={styles.horizontal_padding}>
+        <Breadcrumbs />
         <h1>{countryTitle}</h1>
       </header>
       <div className={styles.filters}>

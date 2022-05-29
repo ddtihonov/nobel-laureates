@@ -1,18 +1,17 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import styles from './country.module.css';
 import arrow from '../../images/arrow.svg';
 
 export const CountryList = ({ countries }) => {
-
-  /*countries - 135 обьектов вида {name: 'Chile', code: 'CL'}*/
+  const history = useHistory();
 
   return (
     <ul>
       {countries.map(({ name, code, count }, index) => (
         <li key={index}>
           <Link
-            to={{ pathname: `/list/${code}` }} /* 135 обьектов вида {name: 'Chile', code: 'CL'}*/
+            to={{ pathname: `/list/${code}`, state: history.location.state }}
             className={styles.link}
           >
             <div className={styles.country}>

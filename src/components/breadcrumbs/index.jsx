@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
 import styles from './breadcrumbs.module.css';
 
 import { removeRemainingCrumbs } from '../../services/breadcrumbs';
 
-const Crumb = ({ url, title }) => {
+const Crumb = ({ path, url, title }) => {
+  const match = useRouteMatch(path);
   const history = useHistory();
   const { state } = useLocation();
 
@@ -16,10 +17,16 @@ const Crumb = ({ url, title }) => {
 
   return (
     <span className={styles.item}>
-      <a href={url} onClick={routeTo}>
-        {title}
-      </a>
-      {` > `}
+      {match && match.isExact ? (
+        title
+      ) : (
+        <>
+          <a href={url} onClick={routeTo}>
+            {title}
+          </a>
+          {` > `}
+        </>
+      )}
     </span>
   );
 };

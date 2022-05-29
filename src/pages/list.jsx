@@ -3,10 +3,10 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
 import styles from './page.module.css';
 
-import { Breadcrumbs } from '../components/breadcrumbs';
 import { CountryList } from '../components/country-list';
 import { SortingControl } from '../components/sorting-control';
 import { isContainRoute } from '../services/breadcrumbs';
+import { Breadcrumbs } from '../components/breadcrumbs';
 import { deserializeQuery, loadCountries, loadLaureates, serializeQuery } from '../services/api';
 
 export const ASC = 'asc';
@@ -51,12 +51,11 @@ export const ListPage = () => {
 
   useEffect(
     () => {
-      if (state) {
+      if (state && !isContainRoute(state, url)) {
         history.replace({ state: [...state, { path, url, title: 'List of Nobel laureates' }] });
       }
     },
-    /* eslint-disable-next-line */
-    []
+    [path, url, state, history]
   );
 
   const loadCountryInfo = async () => {
@@ -147,7 +146,10 @@ export const ListPage = () => {
         }
       }
 
+      const { state } = history.location;
+
       history.replace({
+        state,
         pathname,
         search: query
       });
@@ -158,6 +160,7 @@ export const ListPage = () => {
   return (
     <div className={styles.vertical_padding}>
       <header className={styles.horizontal_padding}>
+        <Breadcrumbs />
         <h1>List of Nobel laureates</h1>
       </header>
       <div className={styles.filters}>
