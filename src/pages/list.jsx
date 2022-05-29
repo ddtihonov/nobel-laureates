@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
 import styles from './page.module.css';
 
+import { Breadcrumbs } from '../components/breadcrumbs';
 import { CountryList } from '../components/country-list';
 import { SortingControl } from '../components/sorting-control';
+import { isContainRoute } from '../services/breadcrumbs';
 import { deserializeQuery, loadCountries, loadLaureates, serializeQuery } from '../services/api';
 
 export const ASC = 'asc';
@@ -44,7 +46,18 @@ export const ListPage = () => {
   const [personCountSorting, setPersonCountSorting] = useState('');
 
   const history = useHistory();
-  const { pathname, search } = useLocation();
+  const { pathname, search, state } = useLocation();
+  const { url, path } = useRouteMatch();
+
+  useEffect(
+    () => {
+      if (state) {
+        history.replace({ state: [...state, { path, url, title: 'List of Nobel laureates' }] });
+      }
+    },
+    /* eslint-disable-next-line */
+    []
+  );
 
   const loadCountryInfo = async () => {
     setLoading(true);
@@ -115,7 +128,7 @@ export const ListPage = () => {
           const nextSortingValue = countrySorting ? (countrySorting === ASC ? DESC : ASC) : ASC;
           setCountrySorting(nextSortingValue);
           setPersonCountSorting('');
-          query = getNextQuery(type, nextSortingValue);;
+          query = getNextQuery(type, nextSortingValue);
           break;
         }
         case 'count': {
@@ -125,7 +138,7 @@ export const ListPage = () => {
               : ASC
             : ASC;
           setPersonCountSorting(nextSortingValue);
-          setCountrySorting('')
+          setCountrySorting('');
           query = getNextQuery(type, nextSortingValue);
           break;
         }

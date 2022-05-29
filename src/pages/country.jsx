@@ -59,6 +59,7 @@ export const CountryPage = () => {
     () => {
       loadCountryInfo();
       loadAllCountryLaureates();
+      //deserializeQuery();
     },
     [country, loadCountryInfo, loadAllCountryLaureates]
   );
@@ -73,7 +74,7 @@ export const CountryPage = () => {
           const isYearFits = year => (selectedYear ? year === selectedYear : true);
           const isCategoryFits = category =>
             selectedCategory ? category === selectedCategory : true;
-          return prizes.some(({ year, category }) => isYearFits(year) && isCategoryFits(category));
+            return prizes.some(prize => isCategoryFits(prize.category) && isYearFits(prize.year)) ;
         };
 
         const filteredLaureates = [];
@@ -91,7 +92,7 @@ export const CountryPage = () => {
 
   useEffect(
     () => {
-      const params = deserializeQuery(search);
+      const params = {};
 
       setSelectedYear(`${params.year || ALL}`); // to string
       setSelectedCategory(params.category || ALL);
@@ -114,9 +115,9 @@ export const CountryPage = () => {
             delete params[type];
           }
         } else {
-          params = { };
+          params = { ...params, [type]: value };
         }
-        query = '';
+        query = serializeQuery(params);
       }
       history.replace({
         pathname,

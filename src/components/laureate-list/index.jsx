@@ -16,6 +16,7 @@ const LaureateList = ({ laureates }) => {
         <Link
                 to={{ pathname: `${url}/${id}` }} 
                 className={styles.link}
+                key={id}
             > 
             <li key={id}>
             <Avatar firstname={firstname} surname={surname} className={styles.avatar} />
@@ -26,7 +27,7 @@ const LaureateList = ({ laureates }) => {
                 <Prizes prizes={prizes} />
             </div>
             </li>
-            </Link> 
+        </Link> 
         ))}
         </ul>
     ) : (
